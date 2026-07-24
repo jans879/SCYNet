@@ -27,7 +27,7 @@ SCYNet/
 
 ## trained_networks (python)
 
-This folder contains the trained networks that are ready to use. We make available the 13 TeV networks.
+This folder contains the trained networks that are ready to use. This i for a 13 TeV network, i.e. the network compares the pMSSM-11 model to measurements at the LHC with 13 TeV center of mass energy
 
 Example call: python3 get_chi2_13TeV_from_best_net.py M1  M2  M3  msq12 msq3 msl12 msl3 M_A A_0 mu tan(beta)
 
@@ -46,6 +46,8 @@ make run
 
 
 ## training_code
+
+The training code is not ready to use on any computer yet. I still need to upload the data that is necessary to train the network
 
 
 
