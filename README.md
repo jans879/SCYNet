@@ -1,25 +1,55 @@
-### SCYNet
-Testing supersymmetric models at the LHC with neural networks. The neural network has 11 input parameters of the phenomenological minimal supersymmetric Standard Model (pMSSM-11). The network has one output value which is a chi^2. Lower chi^2s mean that the pMSSM-11 parameter point is compatible with measurements at the Large Hadron Collider (LHC). 
+# SCYNet
 
-The network is the "direct approach" simple feed forward neural network from the SCYNet paper [1]. Detailes can be found in [1] or in my Master's thesis [2].
+## Overview
+This repository contains the neural network for testing supersymmetric models against measurements from the Large Hadron Collider (LHC). The networks take as input the 11 parameters of the phenomenological Minimal Supersymmetric Standard Model (pMSSM-11) and predict a single output value: a χ² statistic. Lower χ² values indicate better agreement between a given pMSSM-11 parameter point measurements from the LHC.
 
-The neural networks have been hyper-parameter optimized. The code is mostly written in python3 with tensorflow.
+The implemented model corresponds to the direct approach described in the SCYNet paper [1]. Additional details on the methodology, network architecture, and training procedure can be found in Ref. [1] and in my Master's thesis [2].
+
+The neural network was optimized through extensive hyperparameter scans to achieve the best possible performance. The codebase is written primarily in Python 3 and uses TensorFlow for training and inference.
+
+## Repository Structure
+
+```text
+SCYNet/
+├── README.md
+├── training_code/
+│   ├── TOUPLOAD.py
+│   └── transformations.py
+├── trained_networks/
+    ├── cpp
+│   └── python
+        ├── get_chi2_13TeV_from_best_net.py
+        ├── net_13TeV.ckpt
+        └── transformations.py
+└── docs/
+    └── thesis.pdf
+```
+
+## trained_networks (python)
+
+This folder contains the trained networks that are ready to use. We make available the 13 TeV networks.
+
+Example call: python3 get_chi2_13TeV_from_best_net.py M1  M2  M3  msq12 msq3 msl12 msl3 M_A A_0 mu tan(beta)
+
+where (M1  M2  M3  msq12 msq3 msl12 msl3 M_A A_0 mu tan(beta)) are the 11 parameters of the supersymmetric model. More details in [1,2]
 
 
-File stucture
+## trained_networks (cpp)
 
-SCYNET_network. this folder includes the completely ready to use neural network. There are two sub-folders. 
+We also provide a framework that allows the network to be embedded in C++ code and called directly from the C++ implementation. This can be useful in applications where speed is important. For example, in global fits, where one aims to identify the best-fit parameters of the pMSSM-11, one typically needs to scan over a large parameter space.
 
- ->python. Call the network from a python code. 
+```text
+run
+make run
+./run
+```
 
- Example call: python3 get_chi2_13TeV_from_best_net.py M1  M2  M3  msq12 msq3 msl12 msl3 M_A A_0 mu tan(beta)
 
- where (M1  M2  M3  msq12 msq3 msl12 msl3 M_A A_0 mu tan(beta)) are the 11 parameters of the supersymmetric model. More details in [1,2]
+## training_code
 
 
- 
- -> cpp. One can call the net from a cpp code. This option is very fast
-SCYNet_train. This folder includes the code that was used to set up the network and train it.
+
+
 
 
 
