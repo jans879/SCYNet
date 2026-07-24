@@ -17,6 +17,7 @@ SCYNet/
 ├── README.md
 ├── training_code/
 │   ├── train_LHC_chi2_neural_net.py
+│   ├── network_architecture.png
 │   └── MORE.py
 ├── trained_networks/
     ├── cpp
