@@ -7,6 +7,9 @@ The implemented model corresponds to the direct approach described in the SCYNet
 
 The neural network was optimized through extensive hyperparameter scans to achieve the best possible performance. The codebase is written primarily in Python 3 and uses TensorFlow for training and inference.
 
+![Architecture of SCYNet](training_code/architecture.png)
+
+
 ## Repository Structure
 
 ```text
