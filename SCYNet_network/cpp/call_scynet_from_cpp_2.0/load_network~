@@ -1,0 +1,44 @@
+import sys
+import math
+import numpy as np
+import tensorflow as tf
+
+N_in=11
+N_out=1
+
+N=[N_in,300,300,300,300,N_out]
+activation_functions=["tanh","tanh","tanh","tanh","tanh"]
+
+
+#create variables for weights and biases
+x_in = tf.placeholder(tf.float32,shape=(1,N[0])) # net will be evaluated always for one batch
+a=[x_in] #outputs of all layers
+w=[]
+b=[]
+for i in range(0,len(N)-1):
+  w.append(tf.Variable(tf.random_normal([N[i], N[i+1]],mean=0.0,stddev=1.0/math.sqrt(N[i]*1.0)),name="w_"+str(i))) #weights[0]=W2
+  b.append(tf.Variable(tf.random_normal([N[i+1]]),name="b_"+str(i))) # biases[0]=b2
+  a.append(tf.tanh(tf.matmul(a[i], w[i]) + b[i])) 
+
+y = a[len(N)-1] #output of the net
+
+
+
+
+###################################
+#restore the network and get chi^2#
+###################################
+
+
+# Add ops to save and restore all the variables.
+saver = tf.train.Saver()
+
+o = np.ndarray(shape=(1,1))#backtransformed output of net
+o_mod=np.ndarray(shape=(1,1))#output of the net
+
+# Launch the model, use the saver to restore variables from disk, and
+sess = tf.Session()
+# Restore variables from disk.
+saver.restore(sess, "/home/jan/Desktop/call_scynet_from_cpp/official_SCYNET/8TeV_SCYNET/net_8TeV.ckpt")
+  
+
