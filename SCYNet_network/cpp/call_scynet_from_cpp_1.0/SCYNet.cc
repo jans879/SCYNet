@@ -1,0 +1,62 @@
+#include <SCYNet.h>
+#include <python2.7/Python.h>
+#include <sstream>
+#include <iostream>
+#include <fstream>
+
+using namespace std;
+
+// https://docs.python.org/2/extending/embedding.html
+// http://stackoverflow.com/questions/3286448/calling-a-python-method-from-c-c-and-extracting-its-return-value
+
+SCYNet::SCYNet( int energy, int argc, char * argv[])
+{
+  cout << "initialize SCYNet at " <<energy<<" TeV"<<endl;
+  /// initialise python, import modules
+  Py_SetProgramName( (char *) (const char *) "SCYNet" ); 
+  Py_Initialize();
+  PySys_SetArgv(argc, argv);
+
+  // set the energy such that the python program can acess it.
+  std::string var = "energy=" + std::to_string(energy) ;
+  PyRun_SimpleString(var.c_str()); // now the variable energy is available in the python scripts
+
+  //load network
+  std::string load_net = "./load_network.py";
+  PyObject* PyFileObject = PyFile_FromString( (char*) load_net.c_str(), "r");
+  int t = PyRun_SimpleFile(PyFile_AsFile(PyFileObject), (char*) load_net.c_str());
+  cout<<"Network loaded"<<endl;
+  cout<<"--------------"<<endl;
+}
+
+SCYNet::~SCYNet ()
+{
+  Py_Finalize();
+  cout << "SCYNet ends!" << endl;
+}
+
+void SCYNet::get_chi2 ( const float x[] )
+{
+  cout << "SCYNet for pMSSM-11 point " << x[0]<<" "<<x[1]<<" "<<x[2]<<" "<<x[3]<<" "<<x[4]<<" "<<x[5]<<" "<<x[6]<<" "<<x[7]<<" "<<x[8]<<" "<<x[9]<<" "<<x[10] << endl;
+
+  //write the parameter point to a file where the python script reads it in
+  ofstream myfile;
+  myfile.open("parameterpoint.txt");
+  myfile << x[0]<<" "<<x[1]<<" "<<" "<<x[2]<<" "<<x[3]<<" "<<x[4]<<" "<<x[5]<<" "<<x[6]<<" "<<x[7]<<" "<<x[8]<<" "<<x[9]<<" "<<x[10];
+  myfile.close();
+
+  //calculate chi2
+  std::string chi2_script = "./get_chi2.py";
+  PyObject* PyFileObject = PyFile_FromString( (char*) chi2_script.c_str(), "r");
+  int t = PyRun_SimpleFile(PyFile_AsFile(PyFileObject), (char*) chi2_script.c_str());
+  cout<<"python script executes with "<<t<<endl;
+
+  //read chi2 from file
+  string line;
+  ifstream myfile_1 ("chi2.txt");
+  bool got_line = getline (myfile_1,line);
+
+  cout <<"chi2 from SCYNET"<< line << endl;
+
+  //one does not have to delete the "parameterpoint" which is in parameterpoint.txt, because the next call will anyway overwrite it
+}

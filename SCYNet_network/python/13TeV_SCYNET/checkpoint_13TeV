@@ -1,0 +1,2 @@
+model_checkpoint_path: "/home/js668623/neural_nets/pMSSM_11_tensorflow/chi2/classifier_plus_net_for_each_range/picture_outputs/13TeV_range_0_100/net.ckpt"
+all_model_checkpoint_paths: "/home/js668623/neural_nets/pMSSM_11_tensorflow/chi2/classifier_plus_net_for_each_range/picture_outputs/13TeV_range_0_100/net.ckpt"

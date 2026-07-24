@@ -1,0 +1,19 @@
+python_version_full := $(wordlist 2,4,$(subst ., ,$(shell python --version 2>&1)))
+python_version_major := $(word 1,${python_version_full})
+python_version_minor := $(word 2,${python_version_full})
+libpython := -lpython$(python_version_major).$(python_version_minor)
+
+GCC=g++ 
+
+all: library exe
+
+library:
+	$(GCC) SCYNet.cc -I. $(libpython) -shared -fPIC -o libSCYNet.so -std=c++11
+
+exe:
+	$(GCC) run.cpp -I. -L. -o run -l SCYNet
+
+run: .PHONY
+	LD_LIBRARY_PATH=. ./run
+
+.PHONY:
