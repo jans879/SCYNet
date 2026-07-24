@@ -16,8 +16,8 @@ The neural network was optimized through extensive hyperparameter scans to achie
 SCYNet/
 ├── README.md
 ├── training_code/
-│   ├── TOUPLOAD.py
-│   └── transformations.py
+│   ├── train_LHC_chi2_neural_net.py
+│   └── MORE.py
 ├── trained_networks/
     ├── cpp
 │   └── python
