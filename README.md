@@ -62,4 +62,4 @@ The training code is not ready to use on any computer yet. I still need to uploa
 
 [1] https://arxiv.org/abs/1703.01309
 
-[2] Link to Master's thesis
+[2] See docs folder
