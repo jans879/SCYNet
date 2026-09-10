@@ -1,19 +1,21 @@
 # SCYNet
 
 ## Overview
-This repository contains the neural network for testing supersymmetric models against measurements from the Large Hadron Collider (LHC). The networks take as input the 11 parameters of the phenomenological Minimal Supersymmetric Standard Model (pMSSM-11) and predict a single output value: a χ² statistic. Lower χ² values indicate better agreement between a given pMSSM-11 parameter point measurements from the LHC.
+This repository contains the neural network for testing supersymmetric models against measurements from the Large Hadron Collider (LHC). The networks take as input the 11 parameters of the phenomenological Minimal Supersymmetric Standard Model (pMSSM-11) and predict a single output value: a χ² statistic. Lower χ² values indicate better agreement between a given pMSSM-11 parameter point measurements from the LHC. Here we describe the model corresponding to the direct approach described in the SCYNet paper [1]. Additional details on the methodology, network architecture, and training procedure can be found in Ref. [1] and in my Master's thesis [2].
 
 ![Architecture of SCYNet](training_code/network_architecture.png)
 
-In the following figure we show a histogram of the target χ² distribution
+In the following figure, we show a histogram of all χ² values in the full dataset used to train and validate the model. Because of the way the data was generated in the 11-dimensional parameter space, there are two clear peaks around 40 and 100. In other words, there are many more data points with target values around these two regions than with target values in between the peaks. 
 
 <p align="center">
   <img src="training_code/data_histogram.png" alt="Data distribution" width="600"><br>
   <em>Histogram of the target χ² distribution</em>
 </p>
 
+In the following figure, we show the mean error on the validation set after each epoch. The solid black line shows the overall mean error, while the other lines show the mean error in different target ranges. The target ranges shown here are marked by vertical dashed lines in the histogram above.
+We observe that the mean error is generally smaller in the target ranges that contain more data points. We call this the **rare target learning problem (RTLP)**. It is a general feature that we have observed: the network learns targets better when they appear more frequently in the dataset.
+We have tried to mitigate this behavior in several ways (more details below). While we were able to improve the performance, we were not able to reduce the error in the rare target ranges to the same level as in the other ranges.
 
-The mean error on a validation set with respect to the training epochs that the network makes is shown in the following plot
 
 <p align="center">
   <img src="training_code/mean_error_vs_epochs.png" alt="Mean error" width="700"><br>
@@ -54,7 +56,7 @@ Extend data artificially  in χ² ranges with low data coverage.
 Two networks. One for comparison with 8TeV meansurements and one for comparison with 13 TeV measurements.
 
 
-The implemented model corresponds to the direct approach described in the SCYNet paper [1]. Additional details on the methodology, network architecture, and training procedure can be found in Ref. [1] and in my Master's thesis [2].
+
 
 
 
