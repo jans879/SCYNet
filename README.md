@@ -8,14 +8,16 @@ This repository contains the neural network for testing supersymmetric models ag
 
 In the following figure we show a histogram of the target χ² distribution
 
-![Mean error](training_code/network/network_performance_plots/histogram_data_8_TeV.pdf)
+![Mean error](training_code/data_histogram.png)
 
 The mean error on a validation set with respect to the training epochs that the network makes is shown in the following plot
 
-![Target distribution](training_code/network/network_performance_plots/mean_total_error_validation_data_8_TeV.pdf)
+![Target distribution](training_code/mean_error_vs_epochs.png)
 
 The error in the target ranges where we have less training targets is significatly larger than the error in the ranges where more training data is available. The ranges that are shown in the above figure are marked by vertical dashed lines in the data histogram. We call this the rare target learning problem (RTLP).
 
+
+Unpack data in training_code/data before running anything.
 
 Details:
 
