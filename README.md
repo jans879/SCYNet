@@ -5,8 +5,12 @@ This repository contains the neural network for testing supersymmetric models ag
 
 ![Architecture of SCYNet](training_code/network_architecture.png)
 
-
 In the following figure we show a histogram of the target χ² distribution
+
+<p align="center">
+  <img src="training_code/data_histogram.png" alt="Mean error" width="500"><br>
+  <em>Histogram of the target χ² distribution</em>
+</p>
 
 ![Mean error](training_code/data_histogram.png)
 
@@ -24,6 +28,9 @@ Details:
 We have done an extensive hyperparameter scan. The results presented above represent the results with the best hyperparameter set. We used a test set in order not to overfit hyperparameters.
 
 With Tensorfolw
+
+We trained two neural networks. One network comparaes pMSSM-11 parameter points with LHC measurements at 8 TeV and the other one with measurements at a higher energy 13 TeV.
+
 
 The neural network was optimized through extensive hyperparameter scans to achieve the best possible performance. The codebase is written primarily in Python 3 and uses TensorFlow for training and inference.
 
