@@ -8,7 +8,7 @@ This repository contains the neural network for testing supersymmetric models ag
 In the following figure we show a histogram of the target χ² distribution
 
 <p align="center">
-  <img src="training_code/data_histogram.png" alt="Data distribution" width="500"><br>
+  <img src="training_code/data_histogram.png" alt="Data distribution" width="600"><br>
   <em>Histogram of the target χ² distribution</em>
 </p>
 
@@ -16,7 +16,7 @@ In the following figure we show a histogram of the target χ² distribution
 The mean error on a validation set with respect to the training epochs that the network makes is shown in the following plot
 
 <p align="center">
-  <img src="training_code/mean_error_vs_epochs.png" alt="Mean error" width="600"><br>
+  <img src="training_code/mean_error_vs_epochs.png" alt="Mean error" width="700"><br>
   <em>Mean error with respect to the training epoch</em>
 </p>
 
