@@ -22,11 +22,27 @@ We have tried to mitigate this behavior in several ways (more details below). Wh
   <em>Mean error with respect to the training epoch</em>
 </p>
 
+We ran sophisticated hyperparameter scans to identify the optimal network structure and training procedure. In the hyperparameter scan we used a third set the test set in order to avoid hyperparameter overfitting.
+The optimal network structure that we've found is
 
-The error in the target ranges where we have less training targets is significatly larger than the error in the ranges where more training data is available. The ranges that are shown in the above figure are marked by vertical dashed lines in the data histogram. We call this the rare target learning problem (RTLP).
+- 4 hidden layers with 300 neurons each.
+- tanh activation functions
+
+We have furthermore tested different cost functions. Quadratic. A modified quadratic cost function that gives more weight to points that are far off to mitigate the RTLP. And a cross entropy corss function. We found that that the quadratic cost function worked best and that the modified quadratic cost function did not reduce the RTLP significantly.
+
+We varied all parameters of the adamOptimizer that was used to minimize the cost function, but we found that the standard parameters worked best (learning_rat = 0.001, bet1 = 0.9, bet2 = 0.999, eps = 1e-08). We reduce the learning rate automatically when the learning progress in the last 10 epochs is not large (we justify this by fitting a line through the last ten points and reduce the learning rate if the slope of the curve is smaller than a specified threshold).
 
 
-Unpack data in training_code/data before running anything.
+We apply a normalization to the inputs and outputs of the network
+
+We do mini batch learning with a batch size of 500.
+
+The weights in layer l were ini-
+tialized with a Gaussian distribution with standard deviation
+1/(N_{l-1}) and mean zero, while the biases were initialized
+with a Gaussian distribution with standard deviation equal
+to one and mean equal to zero.
+
 
 Details:
 
@@ -87,6 +103,7 @@ SCYNet/
 
 The training code is not ready to use on any computer yet. I still need to upload the data that is necessary to train the network
 
+Unpack data in training_code/data before running anything.
 
 
 ## trained_networks (python)
