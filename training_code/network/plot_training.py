@@ -91,7 +91,7 @@ mpl.rcParams['ytick.labelsize'] = 20
 # Visualize training progress
 ##############################
 
-energy = "13"
+energy = "8"
 
 input_dir = "./network_performance_data/"
 

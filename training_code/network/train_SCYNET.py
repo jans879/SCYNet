@@ -33,7 +33,7 @@ import plot_training as pt
 #Read in data #
 ###############
 
-energy = "13" # can chose 8 or 13 
+energy = "8" # can chose 8 or 13 
 
 
 file_dir="./../data"
@@ -95,7 +95,6 @@ full_set =  rd.read_data_set(file_dir,file_name,"full_set",cut_output_max,cut_ou
 print("generate histogram with all data points")
 pt.plot_histogram(full_set._y,y_ranges,energy,'linear','log',r"$\chi^2$","Number of points","./network_performance_plots/")
 
-
 N_full_set = full_set._N
 N_validation_set = 10000
 N_training_set = N_full_set-N_validation_set
@@ -155,7 +154,7 @@ rel_error_validation_data_nearest_neighbour = np.absolute(error_validation_data_
 
 total_rel_error_validation_data_nearest_neighbour = np.sum(rel_error_validation_data_nearest_neighbour)
 
-classification=1.0 # counts how many points have been classified with an error smaller than classification=1.0
+classification = 1.0 # counts how many points have been classified with an error smaller than classification=1.0
 classified_correct_validation_data_nearest_neighbour = np.sum((np.sign(-np.absolute(error_validation_data_nearest_neighbour)+classification)+1.0)*0.5)
 
 

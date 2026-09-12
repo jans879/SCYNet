@@ -37,7 +37,6 @@ def apply_inverse_function_to_inputs(x_mod,x,x_max,x_min,x_mean,x_stddev,x_mod_m
 def apply_function_to_outputs(y,y_mod,y_max,y_min,y_mean,y_stddev,y_mod_max):# all arguments are references
     # The hyperparameter scan was carried out with tanh (except in the last layer I did tanh and linear) and z-score normalization
     #Z-score normalization
-    #TODO: implement the modified Z-score normalization!?
     y_mod[:] = (y-y_mean.T)/y_stddev.T
 
     y_mod_max[:] = np.max(np.abs(y_mod),axis=0)
@@ -206,21 +205,21 @@ class Dataset(object):
         #determine y_min and y_max
         self._y_max = np.max(self._y,axis=0)
         self._y_min = np.min(self._y,axis=0)
-        self._y_mean = np.mean(self._y,axis=0)
+        self._y_mean = (self._y_min+self._y_max)/2.0 # for modified z-score normalization #np.mean(self._y,axis=0)
         self._y_stddev = np.std(self._y,axis=0)
         self._y_mod = np.ndarray(shape=(self._N,N_out)) #function applied to outputs,
         self._y_mod_max = np.zeros(shape=(N_out))
 
         self._x_max = np.max(self._x,axis=0)
         self._x_min = np.min(self._x,axis=0)
-        self._x_mean = np.mean(self._x,axis=0) # x has structure x = [[M1,M2, ...],[M1,M2,...], ... ]. Them x_mean [M1average, M2average, ... (11 entries)]
+        self._x_mean = np.mean(self._x,axis=0) # x has structure x = [[M1,M2, ...],[M1,M2,...], ... ]. Then x_mean [M1average, M2average, ... (11 entries)]
         self._x_stddev = np.std(self._x,axis=0)
         self._x_mod = np.ndarray(shape=(self._N,N_in)) #function applied to inputs
         self._x_mod_max = np.zeros(shape=(N_in))
 
         #apply function to inputs and outputs, the function can also be the identity
-        apply_function_to_inputs(self._x,self._x_mod,self._x_max,self._x_min,self._x_mean,self._x_stddev,self._x_mod_max)
-        apply_function_to_outputs(self._y,self._y_mod,self._y_max,self._y_min,self._y_mean,self._y_stddev,self._y_mod_max)
+        apply_function_to_inputs(self._x,self._x_mod,self._x_max,self._x_min,self._x_mean,self._x_stddev,self._x_mod_max) # note that this fills x_mod AND x_mod_max!
+        apply_function_to_outputs(self._y,self._y_mod,self._y_max,self._y_min,self._y_mean,self._y_stddev,self._y_mod_max) # note that this fills y_mod AND y_mod_max!
 
         #initializing:
         for i in range(0,len(y_ranges)):
