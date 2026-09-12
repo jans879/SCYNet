@@ -43,21 +43,23 @@ The provided code is simple fully connected feed forward neural network. We have
 - Weight and bias initialization: We initialize the weights which connect layer l and l-1 with a gaussian distribution which has mean zero and standard deviation $1/N_{l-1}$, where $N_{l-1}$ are the number of neurons in layer l-1. The biases are initialized with a standard normal distribution. Other initialization procedures can easily be implemented if needed.
 
 - Feature scaling: It can be beneficial for the trainign if we apply a transformation to the input $x_i, i=1\cdot 11$ and output values $y=\chi^2$. The code is written in a way that it easy to adjust the transofromation. The transformation which one applies on the outputs has to be invertible in order to be able to back transform the outputted values of the neural net. The transformation on the inputs does not have to be invertible. When using a tanh activation function in the output neuron we use a so-called modified Z-score transformation. 
+
 $$
 \hat{y}= \left(y-\mu\right)/\sigma
 $$
-and then 
+
+and then
+ 
 $$
 \hat{\hat{y}} = \hat{y}/{\rm max} |\hat{y}|
 $$
+
 where $\mu = (y_{\rm min}+y_{\rm max})/2$ and $\sigma$ is the standard deviation. We use this expression for $\mu$ so that $y_{\rm min}$ corresponds to $-1$ and $y_{\rm max}$ to $+1$ and the entire target range of tanh is covered. For the input values we use the same transormation but this time $\mu$ really represents the mean of all input values (this is the normal Z-score normalization).
 
 - Learning slowdown: After 10 learning epochs we check if the slope of a line which has been fitted to the last 10 validation errors is larger than some threshold. If this is the case the learning rate of the minimization algorithm will be reduced by 1/2.
 
 - Exponential damping: We multiply each squared term in the cost function with an exponential term that gives more weight to small targets. For example for the quadratic cost function:
-$$
-\frac{1}{N_{\rm train}}\sum_{i=1,\cdots N_{\rm train}}(y_i-o_i)^2 \, e^{-5\frac{y_i}{y_{\rm max}}}
-$$
+$\frac{1}{N_{\rm train}}\sum_{i=1,\cdots N_{\rm train}}(y_i-o_i)^2 \, e^{-5\frac{y_i}{y_{\rm max}}}$
 where $o_i$ the output of the neural network and $y_i$ is the desired target value.
 
 
@@ -67,16 +69,16 @@ We ran sophisticated **hyperparameter scans** to identify the optimal network st
 
 |Hyperparameter | Scanned | Best  |
 |-----------|-------------|---------|
-|Number of hidden layers | 2,3,4,5 | **4** |
-|Number of neurons in hidden layers | 50,150,450 | **150** |
+|Number of hidden layers | 2, 3, 4, 5 | **4** |
+|Number of neurons in hidden layers | 50, 150, 450 | **150** |
 |Cost function | quadratic, cross | **quadratic** |
 |Exponential damping | on, off | No preference
-|Batch size | 80,500,3000 | **500** |
-|lambda | $10^{-3},10^{-4},10^{-5},10^{-6}$ | **10^{-5}** |
-|Learning rate | 10^{-1},10^{-2},10^{-3},10^{-4} | **10^{-3}** |
-|Dropout probablitty 1 | 0.9,0.95,1 | **1** |
-|Dropout probablitty 2 | 0.9,0.95,1 | **1** |
-|Activation in last layer | (tanh, linear) | **tanh** |
+|Batch size | 80, 500, 3000 | **500** |
+|lambda | $10^{-3},10^{-4},10^{-5},10^{-6}$ | **$10^{-5}$** |
+|Learning rate | $10^{-1},10^{-2},10^{-3},10^{-4}$ | **$10^{-3}$** |
+|Dropout probablitty 1 | 0.9, 0.95, 1 | **1** |
+|Dropout probablitty 2 | 0.9, 0.95, 1 | **1** |
+|Activation in last layer | tanh, linear | **tanh** |
 
 
 The activation functions in the hidden layers are all tanh. The other Adam optimizer hyperparameters (except the learning rate) are set to their default values. The two dropout probabilities are applied alternating to the hidden layers.
@@ -85,11 +87,11 @@ The activation functions in the hidden layers are all tanh. The other Adam optim
 We have tried to mitigate the RTLP in several ways:
 
 
-- Artificial extension: One duplicates the pMSSM-11 parameter points which lead to χ² values in a rare target area. The duplicated points get the same χ² as their original points, but one component of the 11-dimensional parameter point is slightly modified 
+- Artificial extension: One duplicates the pMSSM-11 parameter points which lead to $\chi^2$ values in a rare target area. The duplicated points get the same $\chi^2$ as their original points, but one component of the 11-dimensional parameter point is slightly modified 
 
 - Sequence learning: One trains the neural net not always with the full training set. For example for two epochs one trains the neural net with the full training set and then for one epoch one uses only the data in the training set which has target values in the rare areas. This will be repeated over and over. The training with the rare target data happens with a reduced learning rate.
 
-- Additional sampling in rare target areas: One can identify areas in the 11 dimensional parameter space which lead to target values (χ²) which lie in rare target areas. Then one can sample especially new points in these areas. Another very similar approach is to sample around existing parameter points which lead to χ² values in the rare target areas.
+- Additional sampling in rare target areas: One can identify areas in the 11 dimensional parameter space which lead to target values ($\chi^2$) which lie in rare target areas. Then one can sample especially new points in these areas. Another very similar approach is to sample around existing parameter points which lead to $\chi^2$ values in the rare target areas.
 
 
 The first two options above are included in the SCYNEt code and can be activated easily by setting sequence_learning = "True" and extend_data_artificially = "True". The additionally sampled data is per default included in the provided data set.
