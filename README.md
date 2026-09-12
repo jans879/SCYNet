@@ -1,19 +1,19 @@
 # SCYNet
 
 ## Overview
-This repository contains neural networks for testing supersymmetric models against measurements from the Large Hadron Collider (LHC). The networks take as input the 11 parameters of the phenomenological Minimal Supersymmetric Standard Model (pMSSM-11) and predict a single output value: a χ² statistic, see Fig. below. Lower χ² values indicate better agreement between a given pMSSM-11 parameter point and measurements from the LHC. 
+This repository contains neural networks for testing supersymmetric models against measurements from the Large Hadron Collider (LHC). The networks take as input the 11 parameters of the phenomenological Minimal Supersymmetric Standard Model (pMSSM-11) and predict a single output value: a $\chi^2$ statistic, see Fig. below. Lower $\chi^2$ values indicate better agreement between a given pMSSM-11 parameter point and measurements from the LHC. 
 We provide two networks for two LHC collision energies (8TeV and 13 TeV). In the following we summarize the details on the methodology, network architecture, and training procedure. For more detils see Refs. [1,2].
 
 <p align="center">
   <img src="training_code/network_architecture.png" alt="Network architecture" width="800"><br>
-  <em>Histogram of the target χ² distribution</em>
+  <em>Histogram of the target $\chi^2$ distribution</em>
 </p>
 
-In the following figure, we show a histogram of all χ² values in the full dataset used to train and validate the model. Because of the way the data was generated in the 11-dimensional parameter space, there are two clear peaks around 40 and 100. In other words, there are many more 11-dimensional data points with lead to target χ² values around these two regions than with target values in between the peaks. 
+In the following figure, we show a histogram of all $\chi^2$ values in the full dataset used to train and validate the model. Because of the way the data was generated in the 11-dimensional parameter space, there are two clear peaks around 40 and 100. In other words, there are many more 11-dimensional data points with lead to target $\chi^2$ values around these two regions than with target values in between the peaks. 
 
 <p align="center">
   <img src="training_code/data_histogram.png" alt="Data distribution" width="600"><br>
-  <em>Histogram of the target χ² distribution</em>
+  <em>Histogram of the target $\chi^2$ distribution</em>
 </p>
 
 In the following figure, we show the mean error on the points in the validation set after each training epoch. The solid black line shows the overall mean error, while the other lines show the mean error in different target ranges. The different target ranges shown are marked by vertical dashed lines in the histogram above.
