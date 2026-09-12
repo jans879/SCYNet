@@ -72,7 +72,7 @@ We ran sophisticated **hyperparameter scans** to identify the optimal network st
 |Cost function | quadratic, cross | **quadratic** |
 |Exponential damping | on, off | No preference
 |Batch size | 80,500,3000 | **500** |
-|lambda | 10^{-3},10^{-4},10^{-5},10^{-6} | **10^{-5}** |
+|lambda | $10^{-3},10^{-4},10^{-5},10^{-6}$ | **10^{-5}** |
 |Learning rate | 10^{-1},10^{-2},10^{-3},10^{-4} | **10^{-3}** |
 |Dropout probablitty 1 | 0.9,0.95,1 | **1** |
 |Dropout probablitty 2 | 0.9,0.95,1 | **1** |
