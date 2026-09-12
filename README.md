@@ -1,48 +1,63 @@
 # SCYNet
 
 ## Overview
-This repository contains neural networks for testing supersymmetric models against measurements from the Large Hadron Collider (LHC). The networks take as input the 11 parameters of the phenomenological Minimal Supersymmetric Standard Model (pMSSM-11) and predict a single output value: a χ² statistic, see Fig. below. Lower χ² values indicate better agreement between a given pMSSM-11 parameter point and measurements from the LHC. 
-We provide two networks for two LHC collision energies (8TeV and 13 TeV). In the following we summarize the details on the methodology, network architecture, and training procedure. For more detils see Refs. [1,2].
+The Large Hadron Collider (LHC) collides protons at record-high energies. By studying the outcomes of these collisions physicists gain insights into the smallest building blocks of nature and the fundamental forces governing their interactions.
+
+One of the main goals of the LHC is to search for physics beyond the well-established Standard Model (SM) of particle physics. One of the leading frameworks for extending the SM is the Minimal Supersymmetric Standard Model (MSSM). Here, we consider a specific version of the MSSM, called the pMSSM-11, which introduces 11 new parameters in addition to those of the SM.
+
+To test the pMSSM-11, we need to compare its predictions with measurements from the LHC. For a given point in the 11-dimensional pMSSM-11 parameter space, this is typically done by simulating the corresponding proton-proton collisions and comparing the predicted results with the LHC measurements. This comparison can be quantified using a χ² statistic, where lower (higher) χ² values indicate better (worse) agreement between the pMSSM-11 parameter point and the experimental data.
+
+The problem is that conventional methods can take $\mathcal{O}(\mathrm{hours})$ to calculate the χ² value for a single pMSSM-11 parameter point. In a global fit, however, we need to evaluate potentially billions of parameter points in order to identify the region of the 11-dimensional parameter space that provides the best agreement with the LHC data. This makes conventional approaches computationally very expensive.
+
+**The idea:** We train neural networks on a computationally feasible number of simulated pMSSM-11 parameter points. Once trained, the neural networks can perform the theory–experiment comparison on a vastly shorter timescale, calculating the χ² value in milliseconds rather than hours. This makes it possible to explore the pMSSM-11 parameter space much more efficiently. We dub the neural network **Susy Calculating Yield Net (SCYNet)**.
+
+
+We provide two neural networks for two LHC collision energies, 8 TeV and 13 TeV. In the following, we summarize the methodology, network architecture, and training procedure for the 8 TeV network. The 13 TeV network is trained using a very similar strategy. Further details can be found in Refs. [1,2].
+
+
+We show the network architecture in Fig. 1. The network is a fully connected feed forward neural network. The architecture shown in the figure was found through an extensive hyperparameter scan. More details can be found further below.
 
 <p align="center">
   <img src="training_code/network_architecture.png" alt="Network architecture" width="800"><br>
-  <em> Example network architecture </em>
+  <em> Figure 1. Neural network architecture </em>
 </p>
 
-In the following figure, we show a histogram of all χ² values in the full dataset used to train and validate the model. Because of the way the data was generated in the 11-dimensional parameter space, there are two clear peaks around 40 and 100. In other words, there are many more 11-dimensional data points with lead to target  values around these two regions than with target values in between the peaks. 
+In Fig. 2, we show a histogram of all χ² values in the full dataset used to train and validate the model. The histogram contains a total of $\mathcal{O}(2\times10^5)$ entries. Each χ² value corresponds to a point in the 11-dimensional pMSSM-11 parameter space, and calculating the χ² value for each parameter point took several hours. We performed these simulations on a computing cluster.
+Two distinct peaks appear around χ²$\approx 40$ and χ²$ \approx 100$. The points around χ²$ \approx 40$ are in good agreement with the LHC measurements, whereas the points around χ²$ \approx 100$ are strongly disfavored and in significant tension with the measurements.
+The peaked structure arises from the way we sampled the 11-dimensional parameter space. In other words, the sampling procedure results in many more points with χ² values in these two regions than with values between the two peaks.
 
 <p align="center">
   <img src="training_code/data_histogram.png" alt="Data distribution" width="600"><br>
-  <em>Histogram of the target χ² distribution</em>
+  <em> Figure 2. Histogram of the target χ² distribution</em>
 </p>
 
-In the following figure, we show the mean error on the points in the validation set after each training epoch. The solid black line shows the overall mean error, while the other lines show the mean error in different target ranges. The different target ranges shown are marked by vertical dashed lines in the histogram above.
-We observe that the mean error is generally larger in the target ranges that contain less data points. We call this the **rare target learning problem (RTLP)**. It is a general feature that we have observed: the network learns targets better when they appear more frequently in the dataset.
-We have tried to mitigate the RTLP in several ways (more details below). While we were able to improve the RTLP, we were not able to fully resolve it such that the mean error in all target ranges is roughly the same.
+In Fig. 3, we show the mean error on the validation set after each training epoch. The solid black line represents the overall mean error, while the other lines show the mean error within different target ranges. The boundaries of these target ranges are indicated by the vertical dashed lines in the histogram in Fig. 2.
+We observe that the mean error is generally larger in target ranges containing fewer data points. We refer to this as the **rare target learning problem (RTLP)**. This is a general feature that we have observed: the network learns target values more accurately when they occur more frequently in the training dataset.
+We have explored several approaches to mitigate the RTLP (see below for more details). Although these approaches improve the performance in the less populated target ranges, we have not been able to fully eliminate the effect and achieve approximately equal mean errors across all target ranges.
 
 <p align="center">
   <img src="training_code/mean_error_vs_epochs.png" alt="Mean error" width="700"><br>
-  <em>Mean error with respect to the training epoch</em>
+  <em> Figure 3. Mean error with respect to the training epoch</em>
 </p>
 
 
-The provided code is simple fully connected feed forward neural network. We have implemented it with Tensorflow and python3. The network is very flexible and the user can manually configure the neural network. The following properties can easily be adjusted:
+The provided code implements a simple, fully connected feed-forward neural network. We have implemented it using TensorFlow and Python 3. The network is highly flexible, allowing users to manually configure its architecture and training. The following properties can be adjusted:
 
 - Number of hidden layers and neurons in each layer
 
 - Activation functions in each layer (tanh, sigmoid, relu, etc.)
 
-- Cost function (quadratic, cross-entropy, quadratic-clever(linear for small errors and quadratic for larger errors), etc.)
+- Cost function (quadratic, cross-entropy, quadratic-clever (linear for small errors and quadratic for larger errors), etc.)
 
-- Minimization function for cost function (Gradient Descent, Adam optimizer, etc.)
+- Minimization algrotihm for cost function (Gradient Descent, Adam optimizer, etc.)
 
 - Batch size for mini-batch learning
 
-- Methods in order to avoid overfitting (L2 regularization (adds $\lambda/(2N_{\rm train})\sum $ to cost function), dropout, etc.)
+- Methods in order to avoid overfitting (L2 regularization (adds $\lambda/(2N_{\rm train})\sum {weights}$ to cost function), dropout, etc.)
 
-- Weight and bias initialization: We initialize the weights which connect layer l and l-1 with a gaussian distribution which has mean zero and standard deviation $1/N_{l-1}$, where $N_{l-1}$ are the number of neurons in layer l-1. The biases are initialized with a standard normal distribution. Other initialization procedures can easily be implemented if needed.
+- Weight and bias initialization: We initialize the weights which connect layer $l$ and $l-1$ with a gaussian distribution which has mean zero and standard deviation $1/N_{l-1}$, where $N_{l-1}$ are the number of neurons in layer $l-1$. The biases are initialized with a standard normal distribution. Other initialization procedures can easily be implemented if needed.
 
-- Feature scaling: It can be beneficial for the trainign if we apply a transformation to the input $x_i, i=1\cdot 11$ and output values $y=$χ². The code is written in a way that it easy to adjust the transofromation. The transformation which one applies on the outputs has to be invertible in order to be able to back transform the outputted values of the neural net. The transformation on the inputs does not have to be invertible. When using a tanh activation function in the output neuron we use a so-called modified Z-score transformation. 
+- Feature scaling: It can be beneficial for the training process to apply a transformation to the input $x_i, i=1\cdot 11$ and output variables $y=$χ². The code is written such that the implemented transofromations can easily be adjusted. The transformation applied to the outputs must be invertible in order to be able to transform the neural network's output back to the original scale. The transformation of the inputs does not necessarily have to be invertible. When using a tanh activation function in the output neuron we use a so-called modified Z-score transformation:
 
 $$
 \hat{y}= \left(y-\mu\right)/\sigma
@@ -54,17 +69,23 @@ $$
 \hat{\hat{y}} = \hat{y}/{\rm max} |\hat{y}|
 $$
 
-where $\mu = (y_{\rm min}+y_{\rm max})/2$ and $\sigma$ is the standard deviation. We use this expression for $\mu$ so that $y_{\rm min}$ corresponds to $-1$ and $y_{\rm max}$ to $+1$ and the entire target range of tanh is covered. For the input values we use the same transormation but this time $\mu$ really represents the mean of all input values (this is the normal Z-score normalization).
+where $\mu = (y_{\rm min}+y_{\rm max})/2$ and $\sigma$ is the standard deviation. We use this particular expression for $\mu$ such that $y_{\rm min}$ corresponds to $-1$ and $y_{\rm max}$ to $+1$ thereby covering the entire thanh range. For the input values we use the same transormation but in this case $\mu$ represents the mean of all input values. This corresponds to the standard Z-score normalization.
 
-- Learning slowdown: After 10 learning epochs we check if the slope of a line which has been fitted to the last 10 validation errors is larger than some threshold. If this is the case the learning rate of the minimization algorithm will be reduced by 1/2.
+- Learning slowdown: After every 10 training epochs the code checks wether the slope of a line which fitted to the last 10 mean validation errors exceeds a specific threshold. If this is the case the learning rate of the minimization algorithm is reduced by a facotr of 2.
 
-- Exponential damping: We multiply each squared term in the cost function with an exponential term that gives more weight to small targets. For example for the quadratic cost function:
-$\frac{1}{N_{\rm train}}\sum_{i=1,\cdots N_{\rm train}}(y_i-o_i)^2 \, e^{-5\frac{y_i}{y_{\rm max}}}$
+- Exponential damping: We multiply each term in the cost function with an exponential term that gives more weight to small targets. For example for the quadratic cost function: 
+
+$$
+\frac{1}{N_{\rm train}}\sum_{i=1,\cdots N_{\rm train}}(y_i-o_i)^2 \, e^{-5\frac{y_i}{y_{\rm max}}}
+$$
+
 where $o_i$ the output of the neural network and $y_i$ is the desired target value.
 
 
 
-We ran sophisticated **hyperparameter scans** to identify the optimal network structure and training procedure. In the following we present a table showing all hyperparameters that have been optimized for the 8 TeV energy neural network. We also show the optimal hyperparameter that were found. We have trained a neural network for each combination of values shown in the table. In total we have tested 77760 hyperparameter configurations, i.e., we trained 77760 differen neural networks. To avoid hyperparameter overfitting we use a different training and validation set for each network that we have trained during the hyperparameter scan.
+We ran **hyperparameter scans** to identify the optimal network structure and training procedure. In the following we present a table showing all hyperparameters summarizing all hyperparametersthat were optimized for the 8 TeV energy neural network. In the last column we show the optimal values that were found. 
+For each hyperparameter combination in the table we trained a seperate neural network. In total we tested 41472 hyperparameter configurations, corresponding to 41472 independently trained neural networks.
+To avoid overfitting to the hyperparameter scan we use a different training and validation set for each network. This ensures that the hyperparameter optimization is not biased toward a particular validation set.
 
 
 |Hyperparameter | Scanned | Best  |
@@ -81,22 +102,22 @@ We ran sophisticated **hyperparameter scans** to identify the optimal network st
 |Activation in last layer | tanh, linear | **tanh** |
 
 
-The activation functions in the hidden layers are all tanh. The other Adam optimizer hyperparameters (except the learning rate) are set to their default values. The two dropout probabilities are applied alternating to the hidden layers.
+The activation functions in the hidden layers are all tanh. We used the Adam optimizer and its hyperparameters (except the learning rate) are set to their default values. The two dropout probabilities are applied alternating to the hidden layers.
 
 
-We have tried to mitigate the RTLP in several ways:
+Even with the optimized hyperparameters we still encounter the RTLP. We have therefore further tried to mitigate the RTLP in several ways:
 
 
-- Artificial extension: One duplicates the pMSSM-11 parameter points which lead to χ² values in a rare target area. The duplicated points get the same χ² as their original points, but one component of the 11-dimensional parameter point is slightly modified 
+- Artificial data set extension: One can artificially duplicate the pMSSM-11 parameter points that yield χ² values in a rare target area. The duplicated points are assigned the same χ² value as their original points, but one component of the 11-dimensional parameter point is slightly modified.
 
-- Sequence learning: One trains the neural net not always with the full training set. For example for two epochs one trains the neural net with the full training set and then for one epoch one uses only the data in the training set which has target values in the rare areas. This will be repeated over and over. The training with the rare target data happens with a reduced learning rate.
+- Sequence learning: The neural network is not always trained with the full training set. For example, the network may be trained on the full training set for two epochs, followed by a training epoch whith only training data from the rare target regions. Training only with the rare target data is done using a reduced learning rate.
 
-- Additional sampling in rare target areas: One can identify areas in the 11 dimensional parameter space which lead to target values (χ²) which lie in rare target areas. Then one can sample especially new points in these areas. Another very similar approach is to sample around existing parameter points which lead to χ² values in the rare target areas.
+- Additional sampling in rare target areas: One can sample new points in the 11 dimensional parameter space that lead to target values (χ²) in rare target areas. A closely related approach is to sample new points around existing parameter points that yield χ² values in the rare target regions.
 
 
-The first two options above are included in the SCYNEt code and can be activated easily by setting sequence_learning = "True" and extend_data_artificially = "True". The additionally sampled data is per default included in the provided data set.
+The first two options above are included in the SCYNet code and can be activated by `setting sequence_learning = "True"` and `extend_data_artificially = "True"`. The additionally sampled data is per default included in the provided data set.
 
-We carried out a hyperparameter scan specifically to mitigate the RTLP. The hyperparameters of the previous scan are set to the best case parameters that were found. The following table shows the hyperparameters that were scanned in order to avoid the RTLP
+We carried out a hyperparameter scan specifically aimed at mitigating the RTLP. The hyperparameters from the previous scan were fixed to the best-performing values identified in that scan. The following table shows the hyperparameters that were varied in the scan to mitigate the RTLP.
 
 |Hyperparameter | Scanned | Best  |
 |-----------|-------------|---------|
@@ -109,12 +130,13 @@ We carried out a hyperparameter scan specifically to mitigate the RTLP. The hype
 
 
 
-Additional sampling and Sequence learning helps to imporve the performance of the network in those ranges. However the artificial extension of the data -- at least as we have implemented it -- did not help to improve the RTLP. Increasing the number of neurons in the hidden layers and the batch size was also found to be beneficial which makes sense when we have more data availabel.
-We want to point out that our studies were just preliminary and we could have probably played around with it much more. However, it is important to say that wile some methods helped to mitigate the RTLP, non of them fully resolved it. The mean error in the rare taregt ranges was still larger than the mean error in the other ranges. I plan to investigate this behaviour more in the future and try if new network architectures can improve the RTLP.
-It would for example be interesting to explore if more modern transformer architectures can significantly improve the RTLP. The models that we have used here are still relativley small and have $\mathcal{O}(10^5)$ parameters. It would be interesting to see if models with many more parameters can improve the RTLP.
+Additional sampling and sequence learning help to improve the performance of the network in the rare target ranges. However, the artificially extending of the data set -- as implemented in the code -- did not lead to an improvement in the RTLP. Increasing the number of neurons in the hidden layers and the batch size was also found to be beneficial which is reasonable given that more training data  are available.
+
+We want to point out that our studies on how to improve the RTLP were preliminary and there are likely many other approaches that could be explored. It is important to say that wile some methods helped mitigate the RTLP, none of them fully resolved the problem. The mean error in the rare taregt ranges remained larger than the mean error in the other ranges. I plan to investigate this behavior more in the future and explore wether new network architectures can further improve the RTLP.
+
+For example, it would be interesting to explore if more modern transformer-based architectures can significantly improve the RTLP. The models that we have used here are still relativley small and have $\mathcal{O}(10^5)$ parameters. It would therefore be interesting to study wether models with many more parameters can achieve better performance in the rare target regions and further mitigate the RTLP.
 
 
-All steps that we have described here are for the 8 TeV network. We have done similar steps for the 13 TeV network that are described in Refs. [1,2].
 
 
 
