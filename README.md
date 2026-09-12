@@ -6,7 +6,7 @@ We provide two networks for two LHC collision energies (8TeV and 13 TeV). In the
 
 <p align="center">
   <img src="training_code/network_architecture.png" alt="Network architecture" width="800"><br>
-  <em>Histogram of the target χ² distribution</em>
+  <em> Example network architecture </em>
 </p>
 
 In the following figure, we show a histogram of all χ² values in the full dataset used to train and validate the model. Because of the way the data was generated in the 11-dimensional parameter space, there are two clear peaks around 40 and 100. In other words, there are many more 11-dimensional data points with lead to target  values around these two regions than with target values in between the peaks. 
@@ -42,7 +42,7 @@ The provided code is simple fully connected feed forward neural network. We have
 
 - Weight and bias initialization: We initialize the weights which connect layer l and l-1 with a gaussian distribution which has mean zero and standard deviation $1/N_{l-1}$, where $N_{l-1}$ are the number of neurons in layer l-1. The biases are initialized with a standard normal distribution. Other initialization procedures can easily be implemented if needed.
 
-- Feature scaling: It can be beneficial for the trainign if we apply a transformation to the input $x_i, i=1\cdot 11$ and output values $y=\chi^2$. The code is written in a way that it easy to adjust the transofromation. The transformation which one applies on the outputs has to be invertible in order to be able to back transform the outputted values of the neural net. The transformation on the inputs does not have to be invertible. When using a tanh activation function in the output neuron we use a so-called modified Z-score transformation. 
+- Feature scaling: It can be beneficial for the trainign if we apply a transformation to the input $x_i, i=1\cdot 11$ and output values $y=$χ². The code is written in a way that it easy to adjust the transofromation. The transformation which one applies on the outputs has to be invertible in order to be able to back transform the outputted values of the neural net. The transformation on the inputs does not have to be invertible. When using a tanh activation function in the output neuron we use a so-called modified Z-score transformation. 
 
 $$
 \hat{y}= \left(y-\mu\right)/\sigma
