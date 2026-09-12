@@ -65,17 +65,18 @@ where $o_i$ the output of the neural network and $y_i$ is the desired target val
 We ran sophisticated **hyperparameter scans** to identify the optimal network structure and training procedure. In the following we present a table showing all hyperparameters that have been optimized for the 8 TeV energy neural network. We also show the optimal hyperparameter that were found. We have trained a neural network for each combination of values shown in the table. In total we have tested 77760 hyperparameter configurations, i.e., we trained 77760 differen neural networks. To avoid hyperparameter overfitting we use a different training and validation set for each network that we have trained during the hyperparameter scan.
 
 
-Hyperparameter | Scanned | Best  |
-number of hidden layers | 2,3,4,5 | **4** |
-number of neurons in hidden layers | 50,150,450 | **150** |
-Cost function | quadratic, cross | **quadratic** |
-Exponential damping | on, off | No preference
-Batch size | 80,500,3000 | **500** |
-lambda | 10^{-3},10^{-4},10^{-5},10^{-6} | **10^{-5}** |
-learning rate | 10^{-1},10^{-2},10^{-3},10^{-4} | **10^{-3}** |
-dropout probablitty 1 | 0.9,0.95,1 | **1** |
-dropout probablitty 2 | 0.9,0.95,1 | **1** |
-Activation in last layer | (tanh, linear) | **tanh** |
+|Hyperparameter | Scanned | Best  |
+|-----------|-------------|---------|
+|Number of hidden layers | 2,3,4,5 | **4** |
+|Number of neurons in hidden layers | 50,150,450 | **150** |
+|Cost function | quadratic, cross | **quadratic** |
+|Exponential damping | on, off | No preference
+|Batch size | 80,500,3000 | **500** |
+|lambda | 10^{-3},10^{-4},10^{-5},10^{-6} | **10^{-5}** |
+|Learning rate | 10^{-1},10^{-2},10^{-3},10^{-4} | **10^{-3}** |
+|Dropout probablitty 1 | 0.9,0.95,1 | **1** |
+|Dropout probablitty 2 | 0.9,0.95,1 | **1** |
+|Activation in last layer | (tanh, linear) | **tanh** |
 
 
 The activation functions in the hidden layers are all tanh. The other Adam optimizer hyperparameters (except the learning rate) are set to their default values. The two dropout probabilities are applied alternating to the hidden layers.
