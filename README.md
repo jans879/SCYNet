@@ -96,13 +96,14 @@ The first two options above are included in the SCYNEt code and can be activated
 
 We carried out a hyperparameter scan specifically to mitigate the RTLP. The hyperparameters of the previous scan are set to the best case parameters that were found. The following table shows the hyperparameters that were scanned in order to avoid the RTLP
 
-Hyperparameter | Scanned | Best  |
-Additional sampling | yes, no | **yes** |
-Artificial Extension | yes, no | **no** |
-Sequence learning | yes, no | **yes** |
-Multiply number of neurons in first hiden layer by | 2, 1.5, 1 | **2** |
-Multiply number of neurons in other hiden layer by | 2, 1.5, 1 | **2** |
-Multiply batch size by | 1.5, 1 | **1.5** |
+|Hyperparameter | Scanned | Best  |
+|-----------|-------------|---------|
+|Additional sampling | yes, no | **yes** |
+|Artificial Extension | yes, no | **no** |
+|Sequence learning | yes, no | **yes** |
+|Multiply number of neurons in first hiden layer by | 2, 1.5, 1 | **2** |
+|Multiply number of neurons in other hiden layer by | 2, 1.5, 1 | **2** |
+|Multiply batch size by | 1.5, 1 | **1.5** |
 
 
 
