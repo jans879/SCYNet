@@ -27,7 +27,7 @@ Two distinct peaks appear around χ²$\approx 40$ and χ²$ \approx 100$. The po
 The peaked structure arises from the way we sampled the 11-dimensional parameter space. In other words, the sampling procedure results in many more points with χ² values in these two regions than with values between the two peaks.
 
 <p align="center">
-  <img src="training_code/network_performance_plots/histogram_data_8_TeV.png" alt="Data distribution" width="600"><br>
+  <img src="training_code/network/network_performance_plots/histogram_data_8_TeV.png" alt="Data distribution" width="600"><br>
   <em> Figure 2. Histogram of the target χ² distribution</em>
 </p>
 
@@ -36,7 +36,7 @@ We observe that the mean error is generally larger in target ranges containing f
 We have explored several approaches to mitigate the RTLP (see below for more details). Although these approaches improve the performance in the less populated target ranges, we have not been able to fully eliminate the effect and achieve approximately equal mean errors across all target ranges.
 
 <p align="center">
-  <img src="training_code/network_performance_plots/mean_total_error_validation_data_8_TeV.png" alt="Mean error" width="700"><br>
+  <img src="training_code/network/network_performance_plots/mean_total_error_validation_data_8_TeV.png" alt="Mean error" width="700"><br>
   <em> Figure 3. Mean error with respect to the training epoch</em>
 </p>
 
