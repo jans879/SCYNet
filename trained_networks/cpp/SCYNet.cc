@@ -7,15 +7,15 @@
 
 using namespace std;
 
-// https://docs.python.org/3/extending/embedding.html
+// https://docs.python.org/2/extending/embedding.html
 // http://stackoverflow.com/questions/3286448/calling-a-python-method-from-c-c-and-extracting-its-return-value
 //
 
 SCYNet::SCYNet( int energy, int argc, char * argv[])
 {
   cout << "initialize SCYNet at " <<energy<<" TeV"<<endl;
-
   /// initialise python, import modules
+
   wchar_t * program = Py_DecodeLocale( "SCYNet", NULL );
   if( program == NULL ){
     cerr << "Fatal error: cannot decode program name" << endl;

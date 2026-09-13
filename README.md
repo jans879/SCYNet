@@ -12,7 +12,7 @@ The problem is that conventional methods can take $\mathcal{O}(\mathrm{hours})$ 
 **The idea:** We train neural networks on a computationally feasible number of simulated pMSSM-11 parameter points. Once trained, the neural networks can perform the theory–experiment comparison on a vastly shorter timescale, calculating the χ² value in milliseconds rather than hours. This makes it possible to explore the pMSSM-11 parameter space much more efficiently. We dub the neural network **Susy Calculating Yield Net (SCYNet)**.
 
 
-We provide two neural networks for two LHC collision energies, 8 TeV and 13 TeV. In the following, we summarize the methodology, network architecture, and training procedure for the 8 TeV network. The 13 TeV network is trained using a very similar strategy. Further details can be found in Refs. [1,2].
+We provide two neural networks for two LHC collision energies, 8 TeV and 13 TeV. In the following, we summarize the methodology, network architecture, and training procedure for the 8 TeV network. The 13 TeV network is trained using a very similar strategy. Further details can be found in our **publication** [1] and my thesis [2].
 
 
 We show the network architecture in Fig. 1. The network is a fully connected feed forward neural network. The architecture shown in the figure was found through an extensive hyperparameter scan. More details can be found further below.
@@ -27,7 +27,7 @@ Two distinct peaks appear around χ²$\approx 40$ and χ²$ \approx 100$. The po
 The peaked structure arises from the way we sampled the 11-dimensional parameter space. In other words, the sampling procedure results in many more points with χ² values in these two regions than with values between the two peaks.
 
 <p align="center">
-  <img src="training_code/data_histogram.png" alt="Data distribution" width="600"><br>
+  <img src="training_code/network_performance_plots/histogram_data_8_TeV.png" alt="Data distribution" width="600"><br>
   <em> Figure 2. Histogram of the target χ² distribution</em>
 </p>
 
@@ -36,7 +36,7 @@ We observe that the mean error is generally larger in target ranges containing f
 We have explored several approaches to mitigate the RTLP (see below for more details). Although these approaches improve the performance in the less populated target ranges, we have not been able to fully eliminate the effect and achieve approximately equal mean errors across all target ranges.
 
 <p align="center">
-  <img src="training_code/mean_error_vs_epochs.png" alt="Mean error" width="700"><br>
+  <img src="training_code/network_performance_plots/mean_total_error_validation_data_8_TeV.png" alt="Mean error" width="700"><br>
   <em> Figure 3. Mean error with respect to the training epoch</em>
 </p>
 
@@ -139,23 +139,9 @@ For example, it would be interesting to explore if more modern transformer-based
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+###############################
+# TODO CONTINUE here !!!!!!!!!
+################################
 
 
 
@@ -163,66 +149,93 @@ For example, it would be interesting to explore if more modern transformer-based
 
 ```text
 SCYNet/
-├── README.md
+├── docs/
+│   └── thesis.pdf
+│
+├── trained_networks/
+│   ├── cpp/
+│   │   ├── networks/
+│   │   │   ├── 8TeV/
+│   │   │   └── 13TeV/
+│   │   ├── get_chi2.py
+│   │   ├── load_network.py
+│   │   ├── Makefile
+│   │   ├── run.cpp
+│   │   ├── SCYNet.cc
+│   │   └── SCYNet.h
+│   │
+│   └── python/
+│       ├── 8TeV/
+│       └── 13TeV/
+│
 ├── training_code/
 │   ├── data/
-│       └── unpack_data.tar.gz
-│   ├── network/
+│   │   └── unpack_data.tar.gz
+│   │
+│   └── network/
 │       ├── network_performance_data/
 │       ├── network_performance_plots/
 │       ├── plot_training.py
 │       ├── read_in_Data.py
 │       └── train_SCYNET.py
-│   ├── data_histogram.png
-│   ├── mean_error_vs_epochs.png
-│   └── network_architecture.png
-├── trained_networks/
-    ├── cpp
-│   └── python
-        ├── get_chi2_13TeV_from_best_net.py
-        ├── net_13TeV.ckpt
-        └── transformations.py
-└── docs/
-    └── thesis.pdf
+│
+└── README.md
 ```
 
 
 ## training_code
 
-In order to train the network from scratch first unpack the data in /data and put it in the folder /data.
+To train the network from scratch, first unpack the data in `/training_code/data` and place it in the same folder.
 
-Then run the network with 
-```text
+Then start the training with 
+```python
 python3 train_SCYNET.py
 ```
-After the network has finished training it produces output data files in /network/network_performance_data/.
-You can visualize the network performance with
-```text
+After the training is complete the network performance output files will be written to: `/network/network_performance_data/`.
+To generate performance plots, run
+```python
 plot_training.py
 ```
-Which produces network performance plots in /network/network_performance_plots/
+The plots will be saved in `/network/network_performance_plots/`
 
 
-
-## trained_networks (python)
-
-This folder contains the trained networks that are ready to use. This i for a 13 TeV network, i.e. the network compares the pMSSM-11 model to measurements at the LHC with 13 TeV center of mass energy
-
-Example call: python3 get_chi2_13TeV_from_best_net.py M1  M2  M3  msq12 msq3 msl12 msl3 M_A A_0 mu tan(beta)
-
-where (M1  M2  M3  msq12 msq3 msl12 msl3 M_A A_0 mu tan(beta)) are the 11 parameters of the supersymmetric model. More details in [1,2]
+Pre-trained networks can also be used directly. In the following sections I describe how to use these pre-trained models.
+The models can be accessed either directly from Python or through a C++ interface.
 
 
-## trained_networks (cpp)
+## trained_networks/python
 
-We also provide a framework that allows the network to be embedded in C++ code and called directly from the C++ implementation. This can be useful in applications where speed is important. For example, in global fits, where one aims to identify the best-fit parameters of the pMSSM-11, one typically needs to scan over a large parameter space.
+This folder contains the trained networks that are ready to use. We provide a network for both 8 TeV and 13 TeV, which can be found in the folders in the folders `/trained_networks/python/8TeV` and `/trained_networks/python/13TeV` respectively. Once in the respective folder the χ² for a given pMSSM-11 parameter point can be obtained with
+
+```python
+python3 get_chi2_8TeV_from_best_net.py M1  M2  M3  msq12 msq3 msl12 msl3 M_A A_0 mu tan(beta)
+```
+
+where `M_1,  M_2,  M_3,  msq12, msq3, msl12, msl3, M_A, A_0, mu, tan(beta)` are the 11 paramerter of the pMSSM-11.
+
+There is also the option to call the network from a C++ script which, I describe next.
+
+## trained_networks/cpp
+
+We also provide a framework that allows the network to be embedded in C++ code and called directly from the C++ implementation. We again provide two networks for 8 TeV and 13 TeV respecively. One can chose either one by either selecting `SCYNet scynet(8, argc, argv);` or `SCYNet scynet(13, argc, argv);` in `run.cpp`. Calling the network from C++ can be useful in applications where speed is critical. For example, in global fits, where the goal is to identify the pMSSM-11 parameter point that is most compatible with LHC measurements, one typically needs to scan over a large number of points in the 11-dimensional parameter space. Such scans are typically implemented in C++.
+
+Running
+
+In 
 
 ```text
+/trained_networks/cpp
+```
+
+executing
+
+```bash
 make
 make run
 ./run
 ```
 
+writes the χ² and writes it into the `chi2.txt` file. The parameter point can be chosen in `run.cpp`.
 
 
 

@@ -92,8 +92,11 @@ output_net = outputfolder+"/net.ckpt"
 #create full set object (containing all data)
 full_set =  rd.read_data_set(file_dir,file_name,"full_set",cut_output_max,cut_output_min,smooth_cut_range,N_in,N_out,y_ranges,train_ys_only_in_range,extend_data_artificially_in_ranges,do_not_consider_these_array_ids)
 
+
+
 print("generate histogram with all data points")
 pt.plot_histogram(full_set._y,y_ranges,energy,'linear','log',r"$\chi^2$","Number of points","./network_performance_plots/")
+
 
 N_full_set = full_set._N
 N_validation_set = 10000
