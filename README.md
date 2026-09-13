@@ -23,7 +23,7 @@ We show the network architecture in Fig. 1. The network is a fully connected fee
 </p>
 
 In Fig. 2, we show a histogram of all χ² values in the full dataset used to train and validate the model. The histogram contains a total of $\mathcal{O}(2\times10^5)$ entries. Each χ² value corresponds to a point in the 11-dimensional pMSSM-11 parameter space, and calculating the χ² value for each parameter point took several hours. We performed these simulations on a computing cluster.
-Two distinct peaks appear around χ² $\approx 40$ and χ² $ \approx 100$. The points around χ² $ \approx 40$ are in good agreement with the LHC measurements, whereas the points around χ² $ \approx 100$ are strongly disfavored and in significant tension with the measurements.
+Two distinct peaks appear around χ² $\approx 40$ and χ² $\approx 100$. The points around χ² $\approx 40$ are in good agreement with the LHC measurements, whereas the points around χ² $\approx 100$ are strongly disfavored and in significant tension with the measurements.
 The peaked structure arises from the way we sampled the 11-dimensional parameter space. In other words, the sampling procedure results in many more points with χ² values in these two regions than with values between the two peaks.
 
 <p align="center">
